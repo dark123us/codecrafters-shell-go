@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -23,6 +24,30 @@ var commandNames = map[string]CommandType{
 	"exit": ExitCommand,
 	"echo": EchoCommand,
 	"type": TypeCommand,
+}
+
+func GetPathDirs() []string {
+	path := os.Getenv("PATH")
+	return strings.Split(path, ":")
+}
+
+func handleTypeCommand(arg string) {
+	// commandType, ok := commandNames[arg]
+	// if !ok {
+	// 	fmt.Fprintf(os.Stdout, "%s: not found\n", arg)
+	// 	return
+	// }
+	paths := GetPathDirs()
+	for _, path := range paths {
+		fullPath := filepath.Join(path, arg)
+		if _, err := os.Stat(fullPath); err == nil {
+			fmt.Fprintf(os.Stdout, "%s is %s\n", arg, fullPath)
+			return
+		}
+	}
+
+	fmt.Fprintf(os.Stdout, "%s: not found\n", arg)
+
 }
 
 func runCommand(command string, args []string) {
@@ -46,11 +71,7 @@ func runCommand(command string, args []string) {
 			fmt.Fprintf(os.Stdout, "not found args\n")
 			return
 		}
-		if _, ok = commandNames[args[0]]; ok {
-			fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", args[0])
-		} else {
-			fmt.Fprintf(os.Stdout, "%s: not found\n", args[0])
-		}
+		handleTypeCommand(args[0])
 	}
 }
 
