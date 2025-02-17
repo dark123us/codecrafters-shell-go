@@ -62,8 +62,8 @@ func handleTypeCommand(arg string) {
 
 func handleRunApp(command string, args []string) {
 	countArgs := len(args)
-	fmt.Fprintf(os.Stdout, "Program was passed %d args (including programm name).\n", countArgs+1)
-	fmt.Fprintf(os.Stdout, "Arg #0 (programm name): %s\n", command)
+	fmt.Fprintf(os.Stdout, "Program was passed %d args (including program name).\n", countArgs+1)
+	fmt.Fprintf(os.Stdout, "Arg #0 (program name): %s\n", command)
 	for i, arg := range args {
 		fmt.Fprintf(os.Stdout, "Arg #%d: %s\n", i+1, arg)
 	}
