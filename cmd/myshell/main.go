@@ -32,11 +32,12 @@ func GetPathDirs() []string {
 }
 
 func handleTypeCommand(arg string) {
-	// commandType, ok := commandNames[arg]
-	// if !ok {
-	// 	fmt.Fprintf(os.Stdout, "%s: not found\n", arg)
-	// 	return
-	// }
+	_, ok := commandNames[arg]
+	if ok {
+		fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", arg)
+		return
+	}
+
 	paths := GetPathDirs()
 	for _, path := range paths {
 		fullPath := filepath.Join(path, arg)
@@ -45,9 +46,7 @@ func handleTypeCommand(arg string) {
 			return
 		}
 	}
-
 	fmt.Fprintf(os.Stdout, "%s: not found\n", arg)
-
 }
 
 func runCommand(command string, args []string) {
