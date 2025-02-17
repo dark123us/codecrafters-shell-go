@@ -11,11 +11,13 @@ import (
 var _ = fmt.Fprint
 
 func main() {
-	fmt.Fprint(os.Stdout, "$ ")
+	for {
+		fmt.Fprint(os.Stdout, "$ ")
 
-	// Wait for user input
-	str, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-	command := strings.TrimSpace(str)
+		// Wait for user input
+		str, _ := bufio.NewReader(os.Stdin).ReadString('\n')
+		command := strings.TrimSpace(str)
 
-	fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
+		fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
+	}
 }
