@@ -47,7 +47,7 @@ func runCommand(command string, args []string) {
 			return
 		}
 		if _, ok = commandNames[args[0]]; ok {
-			fmt.Fprintf(os.Stdout, "%s: is a shell builtin\n", args[0])
+			fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", args[0])
 		} else {
 			fmt.Fprintf(os.Stdout, "%s: command not found\n", args[0])
 		}
