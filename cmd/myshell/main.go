@@ -88,7 +88,6 @@ func runCommand(command string, args []string) {
 		fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
 		return
 	}
-
 	switch commandType {
 	case ExitCommand:
 		n := 0
