@@ -31,6 +31,17 @@ func GetPathDirs() []string {
 	return strings.Split(path, ":")
 }
 
+func isApp(name string) bool {
+	paths := GetPathDirs()
+	for _, path := range paths {
+		fullPath := filepath.Join(path, name)
+		if _, err := os.Stat(fullPath); err == nil {
+			return true
+		}
+	}
+	return false
+}
+
 func handleTypeCommand(arg string) {
 	_, ok := commandNames[arg]
 	if ok {
@@ -49,7 +60,22 @@ func handleTypeCommand(arg string) {
 	fmt.Fprintf(os.Stdout, "%s: not found\n", arg)
 }
 
+func handleRunApp(command string, args []string) {
+	countArgs := len(args)
+	fmt.Fprintf(os.Stdout, "Programm was passed %d args (including programm name).\n", countArgs+1)
+	fmt.Fprintf(os.Stdout, "Arg #0 (programm name): %s\n", command)
+	for i, arg := range args {
+		fmt.Fprintf(os.Stdout, "Arg #%d: %s\n", i+1, arg)
+	}
+	sign := 5998595441
+	fmt.Fprintf(os.Stdout, "Programm Signature: %d\n", sign)
+}
+
 func runCommand(command string, args []string) {
+	if isApp(command) {
+		handleRunApp(command, args)
+		return
+	}
 	commandType, ok := commandNames[command]
 	if !ok {
 		fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
