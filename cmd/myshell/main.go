@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -61,14 +62,16 @@ func handleTypeCommand(arg string) {
 }
 
 func handleRunApp(command string, args []string) {
-	countArgs := len(args)
-	fmt.Fprintf(os.Stdout, "Program was passed %d args (including program name).\n", countArgs+1)
-	fmt.Fprintf(os.Stdout, "Arg #0 (program name): %s\n", command)
-	for i, arg := range args {
-		fmt.Fprintf(os.Stdout, "Arg #%d: %s\n", i+1, arg)
+	cmd := exec.Command(command, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error running command: %v\n", err)
+		return
 	}
-	sign := 5998595441
-	fmt.Fprintf(os.Stdout, "Program Signature: %d\n", sign)
 }
 
 func runCommand(command string, args []string) {
