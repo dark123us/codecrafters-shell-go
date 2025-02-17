@@ -20,10 +20,13 @@ func main() {
 
 		command := args[0]
 
-		if command == "exit" {
-			break
+		switch command {
+		case "exit":
+			return
+		case "echo":
+			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(args[1:], " "))
+		default:
+			fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
 		}
-
-		fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
 	}
 }
