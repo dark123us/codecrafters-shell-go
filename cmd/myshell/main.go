@@ -16,7 +16,13 @@ func main() {
 
 		// Wait for user input
 		str, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		command := strings.TrimSpace(str)
+		args := strings.Split(strings.TrimSpace(str), " ")
+
+		command := args[0]
+
+		if command == "exit" {
+			break
+		}
 
 		fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
 	}
