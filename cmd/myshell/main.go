@@ -68,7 +68,7 @@ func handleRunApp(command string, args []string) {
 		fmt.Fprintf(os.Stdout, "Arg #%d: %s\n", i+1, arg)
 	}
 	sign := 5998595441
-	fmt.Fprintf(os.Stdout, "Programm Signature: %d\n", sign)
+	fmt.Fprintf(os.Stdout, "Program Signature: %d\n", sign)
 }
 
 func runCommand(command string, args []string) {
