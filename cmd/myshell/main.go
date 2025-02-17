@@ -116,6 +116,9 @@ func runCommand(command string, args []string) {
 			fmt.Fprintf(os.Stderr, "cd: missing argument\n")
 			return
 		}
+		if args[0] == "~" {
+			args[0] = os.Getenv("HOME")
+		}
 		err := os.Chdir(args[0])
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "cd: %s: No such file or directory\n", args[0])
