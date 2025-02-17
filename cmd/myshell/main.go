@@ -20,6 +20,7 @@ const (
 	EchoCommand
 	TypeCommand
 	PwdCommand
+	CdCommand
 )
 
 var commandNames = map[string]CommandType{
@@ -27,6 +28,7 @@ var commandNames = map[string]CommandType{
 	"echo": EchoCommand,
 	"type": TypeCommand,
 	"pwd":  PwdCommand,
+	"cd":   CdCommand,
 }
 
 func GetPathDirs() []string {
@@ -109,6 +111,16 @@ func runCommand(command string, args []string) {
 			return
 		}
 		fmt.Fprintf(os.Stdout, "%s\n", curDir)
+	case CdCommand:
+		if len(args) == 0 {
+			fmt.Fprintf(os.Stderr, "cd: missing argument\n")
+			return
+		}
+		err := os.Chdir(args[0])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "cd: %s: No such file or directory\n", args[0])
+			return
+		}
 	}
 }
 
