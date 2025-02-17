@@ -19,12 +19,14 @@ const (
 	ExitCommand CommandType = iota
 	EchoCommand
 	TypeCommand
+	PwdCommand
 )
 
 var commandNames = map[string]CommandType{
 	"exit": ExitCommand,
 	"echo": EchoCommand,
 	"type": TypeCommand,
+	"pwd":  PwdCommand,
 }
 
 func GetPathDirs() []string {
@@ -100,6 +102,13 @@ func runCommand(command string, args []string) {
 			return
 		}
 		handleTypeCommand(args[0])
+	case PwdCommand:
+		curDir, err := os.Getwd()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error getting current directory: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "%s\n", curDir)
 	}
 }
 
