@@ -25,6 +25,8 @@ func TestTrimString(t *testing.T) {
 		{"echo 'hello  world'", []string{"echo", "hello  world"}},
 		{"'echo ' ' hello world '", []string{"echo ", " hello world "}},
 		{"'hello     script' 'shell''world'", []string{"hello     script", "shellworld"}},
+		{"\"quz  hello\"  \"bar\"", []string{"quz  hello", "bar"}},
+		{"\"bar\"  \"shell's\"  \"foo\"", []string{"bar", "shell's", "foo"}},
 	}
 
 	for _, c := range cases {

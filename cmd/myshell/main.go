@@ -77,7 +77,8 @@ func trimString(argin string) []string {
 	var result []string
 	var state State = StateNormal
 	var cur int = 0
-	arg := strings.ReplaceAll(argin, "''", "")
+	quote := strings.ReplaceAll(argin, "''", "")
+	arg := strings.ReplaceAll(quote, "\"\"", "")
 	for i, c := range arg {
 		switch state {
 		case StateNormal:
@@ -92,6 +93,12 @@ func trimString(argin string) []string {
 				}
 				state = StateSingleQuote
 				cur = i + 1
+			} else if c == '"' {
+				if cur < i {
+					result = append(result, arg[cur:i])
+				}
+				state = StateDoubleQuote
+				cur = i + 1
 			}
 		case StateSingleQuote:
 			if c == '\'' {
@@ -101,7 +108,16 @@ func trimString(argin string) []string {
 				state = StateNormal
 				cur = i + 1
 			}
+		case StateDoubleQuote:
+			if c == '"' {
+				if cur < i {
+					result = append(result, arg[cur:i])
+				}
+				state = StateNormal
+				cur = i + 1
+			}
 		}
+
 	}
 	if cur < len(arg)-1 {
 		result = append(result, arg[cur:])
