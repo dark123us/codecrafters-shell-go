@@ -73,10 +73,11 @@ const (
 	StateDoubleQuote
 )
 
-func trimString(arg string) []string {
+func trimString(argin string) []string {
 	var result []string
 	var state State = StateNormal
 	var cur int = 0
+	arg := strings.ReplaceAll(argin, "''", "")
 	for i, c := range arg {
 		switch state {
 		case StateNormal:
