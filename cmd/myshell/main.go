@@ -65,11 +65,56 @@ func handleTypeCommand(arg string) {
 	fmt.Fprintf(os.Stdout, "%s: not found\n", arg)
 }
 
+type State int
+
+const (
+	StateNormal = iota
+	StateSingleQuote
+	StateDoubleQuote
+)
+
+func trimString(arg string) []string {
+	var result []string
+	var state State = StateNormal
+	var cur int = 0
+	for i, c := range arg {
+		switch state {
+		case StateNormal:
+			if c == '\n' || c == ' ' {
+				if cur < i {
+					result = append(result, arg[cur:i])
+				}
+				cur = i + 1
+			} else if c == '\'' {
+				if cur < i {
+					result = append(result, arg[cur:i])
+				}
+				state = StateSingleQuote
+				cur = i + 1
+			}
+		case StateSingleQuote:
+			if c == '\'' {
+				if cur < i {
+					result = append(result, arg[cur:i])
+				}
+				state = StateNormal
+				cur = i + 1
+			}
+		}
+	}
+	if cur < len(arg)-1 {
+		result = append(result, arg[cur:])
+	}
+	return result
+}
+
 func handleRunApp(command string, args []string) {
 	cmd := exec.Command(command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	cmd.Output()
 
 	err := cmd.Run()
 	if err != nil {
@@ -136,7 +181,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
 			break
 		}
-		args := strings.Split(strings.TrimSpace(str), " ")
+		args := trimString(str)
 		runCommand(args[0], args[1:])
 	}
 }
