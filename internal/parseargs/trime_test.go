@@ -33,6 +33,8 @@ func TestTrimString(t *testing.T) {
 		{"'example\\\"testhello\\\"shell'", []string{"example\\\"testhello\\\"shell"}},
 		{"\"hello'script'\\\n'world\"", []string{"hello'script'\n'world"}},
 		{"\"hello\\\"insidequotes\"script\\\"", []string{"hello\"insidequotesscript\""}},
+		{"\"/tmp/foo/'f  \\87'\"", []string{"/tmp/foo/'f  \\87'"}},
+		{"\"/tmp/foo/'f \\43\\'\"", []string{"/tmp/foo/'f \\43\\'"}},
 	}
 
 	for _, c := range cases {

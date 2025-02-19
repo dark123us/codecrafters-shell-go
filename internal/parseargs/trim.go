@@ -55,13 +55,13 @@ func TrimString(argin string) []string {
 			}
 		case StateDoubleQuote:
 			if c == '"' {
-				// buf.WriteRune(c)
-				state = StateNormal
 				// if buf.Len() > 0 {
 				// 	result = append(result, buf.String())
 				// 	buf.Reset()
 				// }
-				// state = StateNormal
+				state = StateNormal
+				// } else if c == '\\' {
+				// 	state = StateEscapeDoubleQuote
 			} else if c == '\\' {
 				state = StateEscapeDoubleQuote
 			} else {
@@ -71,8 +71,12 @@ func TrimString(argin string) []string {
 			buf.WriteRune(c)
 			state = StateNormal
 		case StateEscapeDoubleQuote:
+			if c != '\\' {
+				buf.WriteRune('\\')
+			}
 			buf.WriteRune(c)
 			state = StateDoubleQuote
+
 		}
 	}
 	if buf.Len() > 0 {
