@@ -45,10 +45,10 @@ func TrimString(argin string) []string {
 			}
 		case StateSingleQuote:
 			if c == '\'' {
-				// if buf.Len() > 0 {
-				// 	result = append(result, buf.String())
-				// 	buf.Reset()
-				// }
+				if buf.Len() > 0 {
+					result = append(result, buf.String())
+					buf.Reset()
+				}
 				state = StateNormal
 			} else {
 				buf.WriteRune(c)
