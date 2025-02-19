@@ -9,6 +9,7 @@ const (
 	StateSingleQuote
 	StateDoubleQuote
 	StateEscape
+	StateEscapeDoubleQuote
 )
 
 func TrimString(argin string) []string {
@@ -44,27 +45,34 @@ func TrimString(argin string) []string {
 			}
 		case StateSingleQuote:
 			if c == '\'' {
-				if buf.Len() > 0 {
-					result = append(result, buf.String())
-					buf.Reset()
-				}
+				// if buf.Len() > 0 {
+				// 	result = append(result, buf.String())
+				// 	buf.Reset()
+				// }
 				state = StateNormal
 			} else {
 				buf.WriteRune(c)
 			}
 		case StateDoubleQuote:
 			if c == '"' {
-				if buf.Len() > 0 {
-					result = append(result, buf.String())
-					buf.Reset()
-				}
+				// buf.WriteRune(c)
 				state = StateNormal
+				// if buf.Len() > 0 {
+				// 	result = append(result, buf.String())
+				// 	buf.Reset()
+				// }
+				// state = StateNormal
+			} else if c == '\\' {
+				state = StateEscapeDoubleQuote
 			} else {
 				buf.WriteRune(c)
 			}
 		case StateEscape:
 			buf.WriteRune(c)
 			state = StateNormal
+		case StateEscapeDoubleQuote:
+			buf.WriteRune(c)
+			state = StateDoubleQuote
 		}
 	}
 	if buf.Len() > 0 {
