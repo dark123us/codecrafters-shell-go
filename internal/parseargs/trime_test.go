@@ -29,6 +29,8 @@ func TestTrimString(t *testing.T) {
 		{"\"bar\"  \"shell's\"  \"foo\"", []string{"bar", "shell's", "foo"}},
 		{"\"before\\  after\"", []string{"before\\  after"}},
 		{"world\\ \\ \\ \\ \\ \\ script", []string{"world      script"}},
+		{"'shell\\\\\\nscript'", []string{"shell\\\\\\nscript"}},
+		{"'example\\\"testhello\\\"shell'", []string{"example\\\"testhello\\\"shell"}},
 	}
 
 	for _, c := range cases {
