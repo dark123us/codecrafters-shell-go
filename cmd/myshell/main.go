@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/codecrafters-io/shell-starter-go/internal/parseargs"
 )
 
 // Ensures gofmt doesn't remove the "fmt" import in stage 1 (feel free to remove this!)
@@ -63,66 +65,6 @@ func handleTypeCommand(arg string) {
 		}
 	}
 	fmt.Fprintf(os.Stdout, "%s: not found\n", arg)
-}
-
-type State int
-
-const (
-	StateNormal = iota
-	StateSingleQuote
-	StateDoubleQuote
-)
-
-func trimString(argin string) []string {
-	var result []string
-	var state State = StateNormal
-	var cur int = 0
-	quote := strings.ReplaceAll(argin, "''", "")
-	arg := strings.ReplaceAll(quote, "\"\"", "")
-	for i, c := range arg {
-		switch state {
-		case StateNormal:
-			if c == '\n' || c == ' ' {
-				if cur < i {
-					result = append(result, arg[cur:i])
-				}
-				cur = i + 1
-			} else if c == '\'' {
-				if cur < i {
-					result = append(result, arg[cur:i])
-				}
-				state = StateSingleQuote
-				cur = i + 1
-			} else if c == '"' {
-				if cur < i {
-					result = append(result, arg[cur:i])
-				}
-				state = StateDoubleQuote
-				cur = i + 1
-			}
-		case StateSingleQuote:
-			if c == '\'' {
-				if cur < i {
-					result = append(result, arg[cur:i])
-				}
-				state = StateNormal
-				cur = i + 1
-			}
-		case StateDoubleQuote:
-			if c == '"' {
-				if cur < i {
-					result = append(result, arg[cur:i])
-				}
-				state = StateNormal
-				cur = i + 1
-			}
-		}
-
-	}
-	if cur < len(arg)-1 {
-		result = append(result, arg[cur:])
-	}
-	return result
 }
 
 func handleRunApp(command string, args []string) {
@@ -198,7 +140,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
 			break
 		}
-		args := trimString(str)
+		args := parseargs.TrimString(str)
 		runCommand(args[0], args[1:])
 	}
 }

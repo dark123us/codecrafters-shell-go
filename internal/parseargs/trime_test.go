@@ -1,4 +1,4 @@
-package main
+package parseargs
 
 import (
 	"testing"
@@ -27,12 +27,14 @@ func TestTrimString(t *testing.T) {
 		{"'hello     script' 'shell''world'", []string{"hello     script", "shellworld"}},
 		{"\"quz  hello\"  \"bar\"", []string{"quz  hello", "bar"}},
 		{"\"bar\"  \"shell's\"  \"foo\"", []string{"bar", "shell's", "foo"}},
+		{"\"before\\  after\"", []string{"before\\  after"}},
+		{"world\\ \\ \\ \\ \\ \\ script", []string{"world      script"}},
 	}
 
 	for _, c := range cases {
-		result := trimString(c.arg)
+		result := TrimString(c.arg)
 		if !compareStringSlice(result, c.expected) {
-			t.Errorf("trimString(%q) = %v; expected %v", c.arg, result, c.expected)
+			t.Errorf("TrimString(%q) = %v; expected %v", c.arg, result, c.expected)
 		}
 	}
 }
