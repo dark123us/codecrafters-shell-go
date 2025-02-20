@@ -110,7 +110,7 @@ func TrimString(argin string) Args {
 		}
 		if arg == ">" || arg == "1>" {
 			isRedirect = true
-			countArgs = i
+			countArgs = i + 1
 		}
 	}
 	result.Command = args[0]

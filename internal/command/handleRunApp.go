@@ -27,15 +27,11 @@ func isApp(name string) bool {
 func handleRunApp(command string, args []string) []byte {
 	var result []byte
 	cmd := exec.Command(command, args...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	err := cmd.Run()
-
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error running command: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Ошибка выполнения команды: %v\n", err)
 		return result
 	}
+	result = output
 	return result
 }
