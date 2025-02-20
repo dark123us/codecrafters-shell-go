@@ -1,11 +1,21 @@
 package command
 
 import (
+	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 )
+
+type AppResult struct {
+	Output []byte
+	Error  error
+	Stdin  io.Reader
+	Stdout io.Writer
+	Stderr io.Writer
+}
 
 func GetPathDirs() []string {
 	path := os.Getenv("PATH")
@@ -23,11 +33,22 @@ func isApp(name string) bool {
 	return false
 }
 
-func handleRunApp(command string, args []string) ([]byte, error) {
-	cmd := exec.Command(command, args...)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return output, err
+func handleRunApp(command string, args []string) (AppResult, error) {
+	result := AppResult{
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
 	}
-	return output, nil
+	cmd := exec.Command(command, args...)
+	cmd.Stdin = result.Stdin
+	cmd.Stdout = result.Stdout
+	cmd.Stderr = result.Stderr
+	err := cmd.Run()
+	if err != nil {
+		result.Output = []byte(fmt.Sprintf("%v", result.Stderr))
+		result.Error = err
+		return result, err
+	}
+	result.Output = []byte(fmt.Sprintf("%v", result.Stdout))
+	return result, nil
 }

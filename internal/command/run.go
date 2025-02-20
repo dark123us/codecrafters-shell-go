@@ -30,9 +30,9 @@ func RunCommand(command string, args []string) ([]byte, error) {
 	if isApp(command) {
 		result, err := handleRunApp(command, args)
 		if err != nil {
-			return result, err
+			return result.Output, err
 		}
-		return result, nil
+		return result.Output, nil
 	}
 	commandType, ok := commandNames[command]
 	if !ok {
