@@ -12,7 +12,14 @@ const (
 	StateEscapeDoubleQuote
 )
 
-func TrimString(argin string) []string {
+type Args struct {
+	Command      string
+	Args         []string
+	IsRedirect   bool
+	RedirectFile string
+}
+
+func TrimString(argin string) Args {
 	var result []string
 	var state State = StateNormal
 	var buf strings.Builder
@@ -79,5 +86,24 @@ func TrimString(argin string) []string {
 	if buf.Len() > 0 {
 		result = append(result, buf.String())
 	}
-	return result
+
+	var isRedirect bool = false
+	var redirectFile string = ""
+	var countArgs int = len(result)
+	for i, arg := range result[1:] {
+		if isRedirect {
+			redirectFile = arg
+			break
+		}
+		if arg == ">" || arg == "1>" {
+			isRedirect = true
+			countArgs = i
+		}
+	}
+	return Args{
+		Command:      result[0],
+		Args:         result[1:countArgs],
+		IsRedirect:   isRedirect,
+		RedirectFile: redirectFile,
+	}
 }

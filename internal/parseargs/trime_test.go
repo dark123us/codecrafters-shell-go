@@ -38,7 +38,8 @@ func TestTrimString(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		result := TrimString(c.arg)
+		output := TrimString(c.arg)
+		result := append([]string{output.Command}, output.Args...)
 		if !compareStringSlice(result, c.expected) {
 			t.Errorf("TrimString(%q) = %v; expected %v", c.arg, result, c.expected)
 		}
