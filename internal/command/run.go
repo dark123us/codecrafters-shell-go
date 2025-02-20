@@ -25,16 +25,19 @@ var commandNames = map[string]CommandType{
 	"cd":   CdCommand,
 }
 
-func RunCommand(command string, args []string) []byte {
+func RunCommand(command string, args []string) ([]byte, error) {
 	var result []byte
 	if isApp(command) {
-		result = handleRunApp(command, args)
-		return result
+		result, err := handleRunApp(command, args)
+		if err != nil {
+			return result, err
+		}
+		return result, nil
 	}
 	commandType, ok := commandNames[command]
 	if !ok {
 		fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
-		return result
+		return result, nil
 	}
 	switch commandType {
 	case ExitCommand:
@@ -48,20 +51,20 @@ func RunCommand(command string, args []string) []byte {
 	case TypeCommand:
 		if len(args) == 0 {
 			fmt.Fprintf(os.Stdout, "not found args\n")
-			return result
+			return result, nil
 		}
 		handleTypeCommand(args[0])
 	case PwdCommand:
 		curDir, err := os.Getwd()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting current directory: %v\n", err)
-			return result
+			return result, nil
 		}
 		fmt.Fprintf(os.Stdout, "%s\n", curDir)
 	case CdCommand:
 		if len(args) == 0 {
 			fmt.Fprintf(os.Stderr, "cd: missing argument\n")
-			return result
+			return result, nil
 		}
 		if args[0] == "~" {
 			args[0] = os.Getenv("HOME")
@@ -69,8 +72,8 @@ func RunCommand(command string, args []string) []byte {
 		err := os.Chdir(args[0])
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "cd: %s: No such file or directory\n", args[0])
-			return result
+			return result, nil
 		}
 	}
-	return result
+	return result, nil
 }

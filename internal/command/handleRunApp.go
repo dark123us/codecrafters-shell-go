@@ -23,11 +23,11 @@ func isApp(name string) bool {
 	return false
 }
 
-func handleRunApp(command string, args []string) []byte {
+func handleRunApp(command string, args []string) ([]byte, error) {
 	cmd := exec.Command(command, args...)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return output
+		return output, err
 	}
-	return output
+	return output, nil
 }
