@@ -1,7 +1,6 @@
 package command
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -25,13 +24,10 @@ func isApp(name string) bool {
 }
 
 func handleRunApp(command string, args []string) []byte {
-	var result []byte
 	cmd := exec.Command(command, args...)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Ошибка выполнения команды: %v\n", err)
-		return result
+		return output
 	}
-	result = output
-	return result
+	return output
 }
