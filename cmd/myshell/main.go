@@ -27,6 +27,8 @@ func main() {
 		result := command.RunCommand(args.Command, args.Args)
 		if args.IsRedirect {
 			redirect.RedirectFile(args.RedirectFile, result)
+		} else {
+			fmt.Fprint(os.Stdout, string(result))
 		}
 	}
 }

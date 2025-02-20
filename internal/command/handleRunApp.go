@@ -31,11 +31,11 @@ func handleRunApp(command string, args []string) []byte {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	output, err := cmd.Output()
+	err := cmd.Run()
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error running command: %v\n", err)
 		return result
 	}
-	return output
+	return result
 }

@@ -20,42 +20,55 @@ type Args struct {
 }
 
 func TrimString(argin string) Args {
-	var result []string
+	var result Args = Args{
+		Command:      "",
+		Args:         []string{},
+		IsRedirect:   false,
+		RedirectFile: "",
+	}
+	if argin == "" {
+		return result
+	}
+	var args []string
 	var state State = StateNormal
 	var buf strings.Builder
-	quote := strings.ReplaceAll(argin, "''", "")
-	arg := strings.ReplaceAll(quote, "\"\"", "")
+
+	arg := argin
+
+	// quote := strings.ReplaceAll(argin, "''", "")
+	//arg := strings.ReplaceAll(quote, "\"\"", "")
 	for _, c := range arg {
 		switch state {
 		case StateNormal:
 			if c == '\n' || c == ' ' {
 				if buf.Len() > 0 {
-					result = append(result, buf.String())
+					args = append(args, buf.String())
 					buf.Reset()
 				}
 			} else if c == '\\' {
 				state = StateEscape
 			} else if c == '"' {
-				if buf.Len() > 0 {
-					result = append(result, buf.String())
-					buf.Reset()
-				}
+				// if buf.Len() > 0 {
+				// 	args = append(args, buf.String())
+				// 	buf.Reset()
+				// }
 				state = StateDoubleQuote
 			} else if c == '\'' {
-				if buf.Len() > 0 {
-					result = append(result, buf.String())
-					buf.Reset()
-				}
+				// if buf.Len() > 0 {
+				// 	args = append(args, buf.String())
+				// 	buf.Reset()
+				// }
 				state = StateSingleQuote
 			} else {
 				buf.WriteRune(c)
 			}
 		case StateSingleQuote:
 			if c == '\'' {
-				if buf.Len() > 0 {
-					result = append(result, buf.String())
-					buf.Reset()
-				}
+				// state = StateNormal
+				// if buf.Len() > 0 {
+				// 	args = append(args, buf.String())
+				// 	buf.Reset()
+				// }
 				state = StateNormal
 			} else {
 				buf.WriteRune(c)
@@ -84,13 +97,13 @@ func TrimString(argin string) Args {
 		}
 	}
 	if buf.Len() > 0 {
-		result = append(result, buf.String())
+		args = append(args, buf.String())
 	}
 
 	var isRedirect bool = false
 	var redirectFile string = ""
-	var countArgs int = len(result)
-	for i, arg := range result[1:] {
+	var countArgs int = len(args)
+	for i, arg := range args[1:] {
 		if isRedirect {
 			redirectFile = arg
 			break
@@ -100,10 +113,9 @@ func TrimString(argin string) Args {
 			countArgs = i
 		}
 	}
-	return Args{
-		Command:      result[0],
-		Args:         result[1:countArgs],
-		IsRedirect:   isRedirect,
-		RedirectFile: redirectFile,
-	}
+	result.Command = args[0]
+	result.Args = args[1:countArgs]
+	result.IsRedirect = isRedirect
+	result.RedirectFile = redirectFile
+	return result
 }
