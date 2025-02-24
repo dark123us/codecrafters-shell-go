@@ -28,16 +28,17 @@ func main() {
 
 		if err != nil {
 			if args.IsRedirectError {
-				redirect.RedirectFile(args.RedirectFile, append(result.ErrorOutput, result.Output...))
+				output := append([]byte{}, result.ErrorOutput...)
+				redirect.RedirectFile(args.RedirectFile, output)
 			} else {
 				fmt.Fprint(os.Stdout, string(result.ErrorOutput))
 			}
-		}
-
-		if args.IsRedirect {
-			redirect.RedirectFile(args.RedirectFile, result.Output)
 		} else {
-			fmt.Fprint(os.Stdout, string(result.Output))
+			if args.IsRedirect || args.IsRedirectError {
+				redirect.RedirectFile(args.RedirectFile, result.Output)
+			} else {
+				fmt.Fprint(os.Stdout, string(result.Output))
+			}
 		}
 	}
 }
