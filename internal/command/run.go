@@ -25,14 +25,28 @@ var commandNames = map[string]CommandType{
 	"cd":   CdCommand,
 }
 
-func RunCommand(command string, args []string) ([]byte, error) {
-	var result []byte
+type CommandResult struct {
+	Output      []byte
+	ErrorOutput []byte
+	Error       error
+}
+
+func getCommandResult(output []byte, errorOutput []byte, err error) CommandResult {
+	return CommandResult{
+		Output:      output,
+		ErrorOutput: errorOutput,
+		Error:       err,
+	}
+}
+
+func RunCommand(command string, args []string) (CommandResult, error) {
+	var result CommandResult
 	if isApp(command) {
 		result, err := handleRunApp(command, args)
 		if err != nil {
-			return result.Output, err
+			return getCommandResult(result.Output, result.ErrorOutput, err), nil
 		}
-		return result.Output, nil
+		return getCommandResult(result.Output, result.ErrorOutput, nil), nil
 	}
 	commandType, ok := commandNames[command]
 	if !ok {

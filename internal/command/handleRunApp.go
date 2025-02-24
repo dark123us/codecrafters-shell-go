@@ -10,11 +10,12 @@ import (
 )
 
 type AppResult struct {
-	Output []byte
-	Error  error
-	Stdin  io.Reader
-	Stdout io.Writer
-	Stderr io.Writer
+	Output      []byte
+	ErrorOutput []byte
+	Error       error
+	Stdin       io.Reader
+	Stdout      io.Writer
+	Stderr      io.Writer
 }
 
 func GetPathDirs() []string {
@@ -40,15 +41,16 @@ func handleRunApp(command string, args []string) (AppResult, error) {
 		Stderr: os.Stderr,
 	}
 	cmd := exec.Command(command, args...)
-	cmd.Stdin = result.Stdin
-	cmd.Stdout = result.Stdout
-	cmd.Stderr = result.Stderr
-	err := cmd.Run()
+	stdout, err := cmd.Output()
+	result.Output = stdout
 	if err != nil {
-		result.Output = []byte(fmt.Sprintf("%v", result.Stderr))
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			result.ErrorOutput = exitErr.Stderr
+		} else {
+			result.ErrorOutput = []byte(fmt.Sprintf("%v", err))
+		}
 		result.Error = err
 		return result, err
 	}
-	result.Output = []byte(fmt.Sprintf("%v", result.Stdout))
 	return result, nil
 }
