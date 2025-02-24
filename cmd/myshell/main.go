@@ -26,13 +26,11 @@ func main() {
 		args := parseargs.TrimString(str)
 		result, err := command.RunCommand(args.Command, args.Args)
 
-		if err != nil {
-			fmt.Fprint(os.Stdout, string(result.ErrorOutput))
-		}
-
 		if args.IsRedirectError {
 			output := result.ErrorOutput
 			redirect.RedirectFile(args.RedirectFile, output)
+		} else if err != nil {
+			fmt.Fprint(os.Stdout, string(result.ErrorOutput))
 		}
 
 		if args.IsRedirect {
