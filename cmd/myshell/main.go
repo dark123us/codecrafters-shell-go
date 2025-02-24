@@ -24,17 +24,17 @@ func main() {
 			break
 		}
 		args := parseargs.TrimString(str)
-		result, err := command.RunCommand(args.Command, args.Args)
+		result, _ := command.RunCommand(args.Command, args.Args)
 
 		if err != nil {
-			if args.IsRedirectError {
-				//output := append(result.ErrorOutput, result.Output...)
-				output := result.ErrorOutput
-				redirect.RedirectFile(args.RedirectFile, output)
-			} else {
-				fmt.Fprint(os.Stdout, string(result.ErrorOutput))
-			}
+			fmt.Fprint(os.Stdout, string(result.ErrorOutput))
 		}
+
+		if args.IsRedirectError {
+			output := result.ErrorOutput
+			redirect.RedirectFile(args.RedirectFile, output)
+		}
+
 		if args.IsRedirect {
 			redirect.RedirectFile(args.RedirectFile, result.Output)
 		} else {
