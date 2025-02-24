@@ -28,7 +28,7 @@ func main() {
 
 		if err != nil {
 			if args.IsRedirectError {
-				output := append([]byte{}, result.ErrorOutput...)
+				output := append(result.ErrorOutput, result.Output...)
 				redirect.RedirectFile(args.RedirectFile, output)
 			} else {
 				fmt.Fprint(os.Stdout, string(result.ErrorOutput))
