@@ -24,7 +24,7 @@ func main() {
 			break
 		}
 		args := parseargs.TrimString(str)
-		result, _ := command.RunCommand(args.Command, args.Args)
+		result, err := command.RunCommand(args.Command, args.Args)
 
 		if err != nil {
 			fmt.Fprint(os.Stdout, string(result.ErrorOutput))
