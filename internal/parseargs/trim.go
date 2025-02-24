@@ -13,18 +13,20 @@ const (
 )
 
 type Args struct {
-	Command      string
-	Args         []string
-	IsRedirect   bool
-	RedirectFile string
+	Command         string
+	Args            []string
+	IsRedirect      bool
+	IsRedirectError bool
+	RedirectFile    string
 }
 
 func TrimString(argin string) Args {
 	var result Args = Args{
-		Command:      "",
-		Args:         []string{},
-		IsRedirect:   false,
-		RedirectFile: "",
+		Command:         "",
+		Args:            []string{},
+		IsRedirect:      false,
+		RedirectFile:    "",
+		IsRedirectError: false,
 	}
 	if argin == "" {
 		return result
@@ -35,8 +37,6 @@ func TrimString(argin string) Args {
 
 	arg := argin
 
-	// quote := strings.ReplaceAll(argin, "''", "")
-	//arg := strings.ReplaceAll(quote, "\"\"", "")
 	for _, c := range arg {
 		switch state {
 		case StateNormal:
@@ -48,27 +48,14 @@ func TrimString(argin string) Args {
 			} else if c == '\\' {
 				state = StateEscape
 			} else if c == '"' {
-				// if buf.Len() > 0 {
-				// 	args = append(args, buf.String())
-				// 	buf.Reset()
-				// }
 				state = StateDoubleQuote
 			} else if c == '\'' {
-				// if buf.Len() > 0 {
-				// 	args = append(args, buf.String())
-				// 	buf.Reset()
-				// }
 				state = StateSingleQuote
 			} else {
 				buf.WriteRune(c)
 			}
 		case StateSingleQuote:
 			if c == '\'' {
-				// state = StateNormal
-				// if buf.Len() > 0 {
-				// 	args = append(args, buf.String())
-				// 	buf.Reset()
-				// }
 				state = StateNormal
 			} else {
 				buf.WriteRune(c)
@@ -100,22 +87,22 @@ func TrimString(argin string) Args {
 		args = append(args, buf.String())
 	}
 
-	var isRedirect bool = false
-	var redirectFile string = ""
 	var countArgs int = len(args)
 	for i, arg := range args[1:] {
-		if isRedirect {
-			redirectFile = arg
+		if result.IsRedirect || result.IsRedirectError {
+			result.RedirectFile = arg
 			break
 		}
 		if arg == ">" || arg == "1>" {
-			isRedirect = true
+			result.IsRedirect = true
+			countArgs = i + 1
+		}
+		if arg == "2>" {
+			result.IsRedirectError = true
 			countArgs = i + 1
 		}
 	}
 	result.Command = args[0]
 	result.Args = args[1:countArgs]
-	result.IsRedirect = isRedirect
-	result.RedirectFile = redirectFile
 	return result
 }
