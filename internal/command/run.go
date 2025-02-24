@@ -44,7 +44,7 @@ func RunCommand(command string, args []string) (CommandResult, error) {
 	if isApp(command) {
 		result, err := handleRunApp(command, args)
 		if err != nil {
-			return getCommandResult(result.Output, result.ErrorOutput, err), nil
+			return getCommandResult(result.Output, result.ErrorOutput, err), err
 		}
 		return getCommandResult(result.Output, result.ErrorOutput, nil), nil
 	}

@@ -46,10 +46,10 @@ func handleRunApp(command string, args []string) (AppResult, error) {
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
 			result.ErrorOutput = exitErr.Stderr
-			fmt.Println(string(result.ErrorOutput))
+			fmt.Print(string(result.ErrorOutput))
 		} else {
 			result.ErrorOutput = []byte(fmt.Sprintf("%v", err))
-			fmt.Println(string(result.ErrorOutput))
+			fmt.Print(string(result.ErrorOutput))
 		}
 		result.Error = err
 		return result, err

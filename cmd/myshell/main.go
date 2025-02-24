@@ -26,7 +26,7 @@ func main() {
 		args := parseargs.TrimString(str)
 		result, err := command.RunCommand(args.Command, args.Args)
 		if err != nil {
-			fmt.Fprint(os.Stdout, string(result.ErrorOutput))
+			// fmt.Fprint(os.Stdout, string(result.ErrorOutput))
 			continue
 		}
 		if args.IsRedirect {
