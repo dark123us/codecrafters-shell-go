@@ -34,7 +34,7 @@ func main() {
 			}
 		}
 
-		if args.IsRedirect {
+		if args.IsRedirect || args.IsRedirectError {
 			redirect.RedirectFile(args.RedirectFile, result.Output)
 		} else {
 			fmt.Fprint(os.Stdout, string(result.Output))
