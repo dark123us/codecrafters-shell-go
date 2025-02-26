@@ -34,7 +34,11 @@ func main() {
 		}
 
 		if args.IsRedirect {
-			redirect.RedirectFile(args.RedirectFile, result.Output)
+			if args.IsAppend {
+				redirect.RedirectFileAppend(args.RedirectFile, result.Output)
+			} else {
+				redirect.RedirectFile(args.RedirectFile, result.Output)
+			}
 		} else {
 			fmt.Fprint(os.Stdout, string(result.Output))
 		}

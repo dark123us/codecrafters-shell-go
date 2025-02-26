@@ -3,6 +3,7 @@ package parseargs
 import "strings"
 
 type State int
+type RedirectType string
 
 const (
 	StateNormal = iota
@@ -12,12 +13,22 @@ const (
 	StateEscapeDoubleQuote
 )
 
+const (
+	RedirectOutputSimple       = ">"
+	RedirectOutput             = "1>"
+	RedirectError              = "2>"
+	RedirectOutputAppend       = ">>"
+	RedirectOutputAppendSimple = "1>>"
+	RedirectErrorAppend        = "2>>"
+)
+
 type Args struct {
 	Command         string
 	Args            []string
 	IsRedirect      bool
 	IsRedirectError bool
 	RedirectFile    string
+	IsAppend        bool
 }
 
 func TrimString(argin string) Args {
@@ -27,6 +38,7 @@ func TrimString(argin string) Args {
 		IsRedirect:      false,
 		RedirectFile:    "",
 		IsRedirectError: false,
+		IsAppend:        false,
 	}
 	if argin == "" {
 		return result
@@ -93,12 +105,20 @@ func TrimString(argin string) Args {
 			result.RedirectFile = arg
 			break
 		}
-		if arg == ">" || arg == "1>" {
+		switch arg {
+		case RedirectOutputSimple, RedirectOutput:
 			result.IsRedirect = true
 			countArgs = i + 1
-		}
-		if arg == "2>" {
+		case RedirectError:
 			result.IsRedirectError = true
+			countArgs = i + 1
+		case RedirectOutputAppendSimple, RedirectOutputAppend:
+			result.IsRedirect = true
+			result.IsAppend = true
+			countArgs = i + 1
+		case RedirectErrorAppend:
+			result.IsRedirectError = true
+			result.IsAppend = true
 			countArgs = i + 1
 		}
 	}
