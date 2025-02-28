@@ -40,7 +40,8 @@ func main() {
 				return app[0] + " ", nil
 			}
 			if compareAppPrefixes(appPrefixes, app) {
-				fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "), "\n$ ", text)
+				// fmt.Fprint(os.Stdout, "\r\n", strings.Join(appPrefixes, "  "), "\r\n$ ", text)
+				fmt.Printf("\r\n%s\r\n$ %s", strings.Join(appPrefixes, "  "), text)
 				os.Stdout.Sync()
 				return text, nil
 			}
