@@ -27,8 +27,6 @@ func main() {
 	reader := readinput.NewReader()
 	defer reader.Close()
 
-	fmt.Println("reader", reader)
-
 	for {
 		// fmt.Fprint(os.Stdout, "$ ")
 
