@@ -31,7 +31,6 @@ func main() {
 	appPrefixes := []string{}
 
 	autocCompleteFunc := func(text string) (string, error) {
-		// fmt.Println("autocCompleteFunc text", text)
 		if text == "ech" {
 			return "echo ", nil
 		} else if text == "exi" {
@@ -41,9 +40,7 @@ func main() {
 				return app[0] + " ", nil
 			}
 			if compareAppPrefixes(appPrefixes, app) {
-				//text = "\n", strings.Join(appPrefixes, "  "), "\n$ ", text
 				fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "), "\n$ ", text)
-				// fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "))
 				os.Stdout.Sync()
 				return text, nil
 			}
@@ -57,11 +54,6 @@ func main() {
 	defer reader.Close()
 
 	for {
-		// fmt.Fprint(os.Stdout, "$ ")
-
-		// Wait for user input
-		// str, err := bufio.NewReader(os.Stdin).ReadString('\n')
-
 		str, err := reader.ReadLine(autocCompleteFunc)
 
 		if err != nil {
