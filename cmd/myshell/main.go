@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/codecrafters-io/shell-starter-go/internal/command"
 	"github.com/codecrafters-io/shell-starter-go/internal/parseargs"
@@ -14,7 +15,21 @@ import (
 // Ensures gofmt doesn't remove the "fmt" import in stage 1 (feel free to remove this!)
 var _ = fmt.Fprint
 
+func compareAppPrefixes(old []string, new []string) bool {
+	if len(old) != len(new) {
+		return false
+	}
+	for i, v := range old {
+		if v != new[i] {
+			return false
+		}
+	}
+	return true
+}
 func main() {
+
+	appPrefixes := []string{}
+
 	autocCompleteFunc := func(text string) (string, error) {
 		// fmt.Println("autocCompleteFunc text", text)
 		if text == "ech" {
@@ -22,7 +37,16 @@ func main() {
 		} else if text == "exi" {
 			return "exit ", nil
 		} else if app, err := command.FindAppPrefix(text); err == nil {
-			return app, nil
+			if len(app) == 1 {
+				return app[0] + " ", nil
+			}
+			if compareAppPrefixes(appPrefixes, app) {
+				msg := "\n" + strings.Join(appPrefixes, " ") + "\n" + "$ " + text
+				fmt.Print(msg)
+				return text, errors.New("found multiple")
+			}
+			appPrefixes = app
+			return text, errors.New("found multiple")
 		}
 		return text, errors.New("not found")
 	}

@@ -35,23 +35,27 @@ func isApp(name string) bool {
 	return false
 }
 
-func FindAppPrefix(prefix string) (string, error) {
+func FindAppPrefix(prefix string) ([]string, error) {
 	paths := GetPathDirs()
+	matches := []string{}
 	for _, path := range paths {
 		files, err := os.ReadDir(path)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		for _, file := range files {
 			if file.IsDir() {
 				continue
 			}
 			if strings.HasPrefix(file.Name(), prefix) {
-				return file.Name() + " ", nil
+				matches = append(matches, file.Name())
 			}
 		}
 	}
-	return "", errors.New("not found")
+	if len(matches) == 0 {
+		return nil, errors.New("not found")
+	}
+	return matches, nil
 }
 
 func handleRunApp(command string, args []string) (AppResult, error) {
