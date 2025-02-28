@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 )
 
@@ -37,7 +38,7 @@ func isApp(name string) bool {
 
 func FindAppPrefix(prefix string) ([]string, error) {
 	paths := GetPathDirs()
-	matches := []string{}
+	matches := make(map[string]bool)
 	for _, path := range paths {
 		files, err := os.ReadDir(path)
 		if err != nil {
@@ -48,14 +49,19 @@ func FindAppPrefix(prefix string) ([]string, error) {
 				continue
 			}
 			if strings.HasPrefix(file.Name(), prefix) {
-				matches = append(matches, file.Name())
+				matches[file.Name()] = true
 			}
 		}
 	}
 	if len(matches) == 0 {
 		return nil, errors.New("not found")
 	}
-	return matches, nil
+	file_names := []string{}
+	for match := range matches {
+		file_names = append(file_names, match)
+	}
+	slices.Sort(file_names)
+	return file_names, nil
 }
 
 func handleRunApp(command string, args []string) (AppResult, error) {
