@@ -1,6 +1,7 @@
 package command
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -32,6 +33,25 @@ func isApp(name string) bool {
 		}
 	}
 	return false
+}
+
+func FindAppPrefix(prefix string) (string, error) {
+	paths := GetPathDirs()
+	for _, path := range paths {
+		files, err := os.ReadDir(path)
+		if err != nil {
+			return "", err
+		}
+		for _, file := range files {
+			if file.IsDir() {
+				continue
+			}
+			if strings.HasPrefix(file.Name(), prefix) {
+				return file.Name() + " ", nil
+			}
+		}
+	}
+	return "", errors.New("not found")
 }
 
 func handleRunApp(command string, args []string) (AppResult, error) {

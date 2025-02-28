@@ -21,6 +21,8 @@ func main() {
 			return "echo ", nil
 		} else if text == "exi" {
 			return "exit ", nil
+		} else if app, err := command.FindAppPrefix(text); err == nil {
+			return app, nil
 		}
 		return text, errors.New("not found")
 	}
