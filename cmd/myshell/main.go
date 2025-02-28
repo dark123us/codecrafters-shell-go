@@ -41,7 +41,7 @@ func main() {
 				return app[0] + " ", nil
 			}
 			if compareAppPrefixes(appPrefixes, app) {
-				msg := "\n" + strings.Join(appPrefixes, " ") + "\n" + "$ " + text
+				msg := "\n" + strings.Join(appPrefixes, "  ") + "\n" + "$ " + text
 				fmt.Print(msg)
 				return text, errors.New("found multiple")
 			}
