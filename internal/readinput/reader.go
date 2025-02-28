@@ -86,9 +86,12 @@ func (r *Reader) ReadLine(autoCompleteFunc AutoCompleteFunc) (string, error) {
 				os.Stdout.Sync()
 				continue
 			}
+			// fmt.Fprint(os.Stdout, "some code\n")
+			// os.Stdout.Sync()
 			if newBuffer != "" {
 				buffer = []byte(newBuffer)
 			}
+			// continue
 		case 127: // Backspace
 			if len(buffer) > 0 {
 				buffer = buffer[:len(buffer)-1]
