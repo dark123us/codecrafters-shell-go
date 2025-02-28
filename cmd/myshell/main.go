@@ -42,10 +42,10 @@ func main() {
 			}
 			if compareAppPrefixes(appPrefixes, app) {
 				//text = "\n", strings.Join(appPrefixes, "  "), "\n$ ", text
-				//fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "), "\n$ ", text)
-				fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "))
-				os.Stdout.Sync()
-				return text, errors.New("found multiple")
+				fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "), "\n$ ", text)
+				// fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "))
+				// os.Stdout.Sync()
+				return text, nil
 			}
 			appPrefixes = app
 			return text, errors.New("found multiple")
