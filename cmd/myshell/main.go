@@ -1,12 +1,12 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 
 	"github.com/codecrafters-io/shell-starter-go/internal/command"
 	"github.com/codecrafters-io/shell-starter-go/internal/parseargs"
+	"github.com/codecrafters-io/shell-starter-go/internal/readinput"
 	"github.com/codecrafters-io/shell-starter-go/internal/redirect"
 )
 
@@ -14,11 +14,29 @@ import (
 var _ = fmt.Fprint
 
 func main() {
+	autocCompleteFunc := func(text string) string {
+		// fmt.Println("autocCompleteFunc text", text)
+		if text == "ech" {
+			return "echo "
+		} else if text == "exi" {
+			return "exit "
+		}
+		return text
+	}
+
+	reader := readinput.NewReader()
+	defer reader.Close()
+
+	fmt.Println("reader", reader)
+
 	for {
-		fmt.Fprint(os.Stdout, "$ ")
+		// fmt.Fprint(os.Stdout, "$ ")
 
 		// Wait for user input
-		str, err := bufio.NewReader(os.Stdin).ReadString('\n')
+		// str, err := bufio.NewReader(os.Stdin).ReadString('\n')
+
+		str, err := reader.ReadLine(autocCompleteFunc)
+
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
 			break
