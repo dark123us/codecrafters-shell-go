@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -14,14 +15,14 @@ import (
 var _ = fmt.Fprint
 
 func main() {
-	autocCompleteFunc := func(text string) string {
+	autocCompleteFunc := func(text string) (string, error) {
 		// fmt.Println("autocCompleteFunc text", text)
 		if text == "ech" {
-			return "echo "
+			return "echo ", nil
 		} else if text == "exi" {
-			return "exit "
+			return "exit ", nil
 		}
-		return text
+		return text, errors.New("not found")
 	}
 
 	reader := readinput.NewReader()

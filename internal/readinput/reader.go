@@ -7,7 +7,7 @@ import (
 	"unsafe"
 )
 
-type AutoCompleteFunc func(text string) string
+type AutoCompleteFunc func(text string) (string, error)
 
 type Reader struct {
 	stdin *os.File
@@ -80,7 +80,12 @@ func (r *Reader) ReadLine(autoCompleteFunc AutoCompleteFunc) (string, error) {
 			fmt.Println()
 			return string(buffer), nil
 		case '\t':
-			newBuffer := autoCompleteFunc(string(buffer))
+			newBuffer, err := autoCompleteFunc(string(buffer))
+			if err != nil {
+				fmt.Fprint(os.Stdout, "\a")
+				os.Stdout.Sync()
+				continue
+			}
 			if newBuffer != "" {
 				buffer = []byte(newBuffer)
 			}
