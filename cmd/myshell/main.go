@@ -44,7 +44,7 @@ func main() {
 				//text = "\n", strings.Join(appPrefixes, "  "), "\n$ ", text
 				fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "), "\n$ ", text)
 				// fmt.Fprint(os.Stdout, "\n", strings.Join(appPrefixes, "  "))
-				// os.Stdout.Sync()
+				os.Stdout.Sync()
 				return text, nil
 			}
 			appPrefixes = app
